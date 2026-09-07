@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "name": "agent-mailroom",
+  "environment": "test",
+  "zone": "agentmailroom.net",
+  "frontDoorSubdomain": "mailroom.agentmailroom.net",
+  "policy": {
+    "receiveOnly": true,
+    "emailSendingEnabled": false,
+    "unknownRecipientPolicy": "reject",
+    "publicSendersOk": true,
+    "retentionDays": 90,
+    "storeFullBodyInSqlite": true,
+    "attachmentPolicy": "metadata-only",
+    "rawEmlRetention": false,
+    "r2Enabled": false,
+    "adapters": []
+  },
+  "resources": {
+    "worker": "agent-mailroom-ingest-test",
+    "eventsQueue": "agent-mailroom-events-test",
+    "eventsDlq": "agent-mailroom-events-dlq-test",
+    "durableObjectClass": "LaneMailbox"
+  },
+  "auth": {
+    "receiptsApi": "bearer",
+    "secretName": "RECEIPT_API_TOKEN"
+  },
+  "reconciliation": {
+    "intervalMinutes": 5,
+    "cron": "*/5 * * * *"
+  },
+  "lanes": [
+    {
+      "slug": "frontdesk",
+      "label": "Front Desk",
+      "purpose": "Default intake",
+      "enabled": true
+    },
+    {
+      "slug": "test",
+      "label": "Test",
+      "purpose": "End-to-end tests only",
+      "enabled": true
+    }
+  ]
+}

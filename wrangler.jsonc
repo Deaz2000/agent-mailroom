@@ -1,0 +1,51 @@
+/**
+ * Agent Mailroom -- test environment.
+ * Secret RECEIPT_API_TOKEN via wrangler secret put. No R2. Receive-only.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "agent-mailroom-ingest-test",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "vars": {
+    "ENVIRONMENT": "test",
+    "MAILROOM_DOMAIN": "mailroom.agentmailroom.net",
+    "RECEIPT_RETENTION_DAYS": "90",
+    "RECONCILE_INTERVAL_MS": "300000",
+    "MAX_MESSAGE_BYTES": "10485760"
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "LANE_DO", "class_name": "LaneMailbox" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["LaneMailbox"] }
+  ],
+  "queues": {
+    "producers": [
+      { "binding": "EVENTS_QUEUE", "queue": "agent-mailroom-events-test" }
+    ],
+    "consumers": [
+      {
+        "queue": "agent-mailroom-events-test",
+        "max_batch_size": 10,
+        "max_retries": 5,
+        "dead_letter_queue": "agent-mailroom-events-dlq-test"
+      },
+      {
+        "queue": "agent-mailroom-events-dlq-test",
+        "max_batch_size": 10,
+        "max_retries": 3
+      }
+    ]
+  },
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
+  "observability": {
+    "enabled": true
+  }
+}

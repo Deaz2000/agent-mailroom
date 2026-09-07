@@ -1,0 +1,26 @@
+{
+  "name": "agent-mailroom",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portable Agent Mailroom — receive-first Cloudflare Email Worker with SQLite Durable Objects",
+  "type": "module",
+  "scripts": {
+    "cf-typegen": "wrangler types",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:dry": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+    "@cloudflare/workers-types": "^4.20250417.0",
+    "typescript": "^5.8.3",
+    "vitest": "~3.0.9",
+    "wrangler": "^4.14.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
